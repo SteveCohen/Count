@@ -115,13 +115,8 @@
         <!-- Right column: controls -->
         <aside class="practice-controls-area" aria-label="Practice controls">
 
-          <!-- Mode selector -->
-          <div id="mode-selector" role="group" aria-label="Practice mode"></div>
-
-          <!-- Session config -->
-          <div id="config-panel" aria-label="Session configuration"></div>
-
-          <!-- Answer input (changes per mode) -->
+          <!-- Answer input (changes per mode) — kept at top so the tagging
+               interface stays visible without scrolling on small screens -->
           <div id="input-panel" aria-label="Your answer"></div>
 
           <!-- Feedback -->
@@ -132,6 +127,12 @@
                   aria-label="Advance to next card or round">
             Next →
           </button>
+
+          <!-- Mode selector -->
+          <div id="mode-selector" role="group" aria-label="Practice mode"></div>
+
+          <!-- Session config -->
+          <div id="config-panel" aria-label="Session configuration"></div>
 
           <!-- Action buttons -->
           <div class="practice-actions" role="group" aria-label="Session controls">
