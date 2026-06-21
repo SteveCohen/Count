@@ -212,7 +212,6 @@ function recordAnswer(feedbackResult, config) {
 }
 
 function _recordMistake(data, rank, expectedTag, userGuessed) {
-  const key = `${rank}:${userGuessed}`;
   const existing = data.commonMistakes.find(m => m.rank === rank && m.userGuessed === userGuessed);
   if (existing) {
     existing.count++;

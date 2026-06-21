@@ -44,10 +44,18 @@ function tagLabel(tag) {
   return '0';
 }
 
+// ASCII hyphen: mirrors what the user types on a keyboard, used to echo input back
 function tagLabelSimple(tag) {
   if (tag > 0) return '+1';
   if (tag < 0) return '-1';
   return '0';
+}
+
+// Spelled-out form for aria-label strings — screen readers handle '−1' inconsistently
+function tagLabelVerbose(tag) {
+  if (tag > 0) return 'plus one';
+  if (tag < 0) return 'minus one';
+  return 'zero';
 }
 
 function formatTrueCount(tc) {
