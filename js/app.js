@@ -251,7 +251,6 @@ function initPracticeTab() {
 
 function onModeChange(newMode) {
   AppState.practiceSession.updateConfig('mode', newMode);
-  AppState.practiceSession.config.mode = newMode;
   renderAnswerInput(newMode, onAnswerSubmit);
   AppState.practiceSession.newShoe();
 }
@@ -314,8 +313,6 @@ function wireControlButtons() {
 
       const result = session.checkAnswer(dummyAnswer);
       if (result) {
-        result.correct = false;
-        result.userAnswer = 'shown';
         renderFeedback({
           ...result,
           mode,
@@ -369,31 +366,11 @@ function _wireBtn(id, fn) {
 
 /* ── Progress Tab ───────────────────────────────────────── */
 function initProgress() {
-  // Initial render placeholder
   const container = document.querySelector('#panel-progress .progress-layout');
   if (container) container.innerHTML = '<p style="color:var(--color-ivory-muted);padding:var(--space-4)">Visit this tab to see your progress.</p>';
-}
 
-function refreshProgressDashboard() {
-  const progressData = loadProgress();
-  const history      = loadSessionHistory();
-  const milestones   = getMilestoneStatus(progressData);
-  const suggestions  = getAdaptiveSuggestions(progressData);
-
-  renderStatGrid(progressData);
-  renderSkillMap(milestones);
-  renderAdaptiveSuggestions(suggestions);
-  renderAccuracyByRank(progressData);
-  renderMistakeBreakdown(progressData);
-  renderSessionHistory(history);
-
-  _wireProgressControls(progressData);
-}
-
-function _wireProgressControls(progressData) {
   const resetBtn = document.getElementById('btn-reset-progress');
-  if (resetBtn && !resetBtn._wired) {
-    resetBtn._wired = true;
+  if (resetBtn) {
     resetBtn.addEventListener('click', () => {
       if (confirm('Reset all progress? This cannot be undone.')) {
         resetProgress();
@@ -408,8 +385,7 @@ function _wireProgressControls(progressData) {
   }
 
   const exportBtn = document.getElementById('btn-export-progress');
-  if (exportBtn && !exportBtn._wired) {
-    exportBtn._wired = true;
+  if (exportBtn) {
     exportBtn.addEventListener('click', () => {
       const json = exportProgressJSON();
       const blob = new Blob([json], { type: 'application/json' });
@@ -421,6 +397,20 @@ function _wireProgressControls(progressData) {
       URL.revokeObjectURL(url);
     });
   }
+}
+
+function refreshProgressDashboard() {
+  const progressData = loadProgress();
+  const history      = loadSessionHistory();
+  const milestones   = getMilestoneStatus(progressData);
+  const suggestions  = getAdaptiveSuggestions(progressData);
+
+  renderStatGrid(progressData);
+  renderSkillMap(milestones);
+  renderAdaptiveSuggestions(suggestions);
+  renderAccuracyByRank(progressData);
+  renderMistakeBreakdown(progressData);
+  renderSessionHistory(history);
 }
 
 /* ── Helpers ────────────────────────────────────────────── */

@@ -111,7 +111,7 @@ function renderCard(card, options = {}) {
 
   el.dataset.cardId = card.id;
   el.setAttribute('aria-label',
-    `${display} of ${suitName}, Hi-Lo tag ${tagLabel(card.hiLoTag)}`);
+    `${display} of ${suitName}, Hi-Lo tag ${tagLabelVerbose(card.hiLoTag)}`);
 
   el.innerHTML = `
     <div class="card__top">
@@ -167,7 +167,7 @@ function flipCard(cardId, newCard, showTag) {
       el.appendChild(badge);
     }
 
-    el.setAttribute('aria-label', `${display} of ${suitName}, Hi-Lo tag ${tagLabel(newCard.hiLoTag)}`);
+    el.setAttribute('aria-label', `${display} of ${suitName}, Hi-Lo tag ${tagLabelVerbose(newCard.hiLoTag)}`);
     setTimeout(() => el.classList.remove('card--flipping-in'), 160);
   }, 150);
 }
@@ -356,7 +356,7 @@ function renderFeedback(feedbackResult, containerId) {
       const tagCls    = tagClass(b.hiLoTag);
       const counted   = hidden ? 'No — hidden' : 'Yes';
       return `<tr class="${hidden ? 'breakdown-hidden' : ''}">
-        <td>${display}${b.suit || ''}</td>
+        <td>${display}<span aria-hidden="true">${b.suit || ''}</span><span class="sr-only">${SUIT_NAMES[b.suit] || ''}</span></td>
         <td class="breakdown-tag--${tagCls}">${tagLabel(b.hiLoTag)}</td>
         <td>${counted}</td>
       </tr>`;

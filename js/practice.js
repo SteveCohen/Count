@@ -7,6 +7,8 @@ const DEAL_DELAYS = {
   challenge:  60
 };
 
+const MIN_CARDS_FOR_NEW_ROUND = 8;
+
 class PracticeSession {
   constructor(config) {
     this.config            = { ...config };
@@ -360,7 +362,7 @@ class PracticeSession {
     clearFeedback('feedback-panel');
     const advId = this.dealId;
 
-    if (!this._hasCards(8) || this.shoe.penetrationReached) {
+    if (!this._hasCards(MIN_CARDS_FOR_NEW_ROUND) || this.shoe.penetrationReached) {
       showShufflePrompt();
       return;
     }
