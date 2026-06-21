@@ -130,7 +130,8 @@ function loadSessionConfig() {
     dealSpeed: 'normal',
     trainingWheels: false,
     soundEffects: true,
-    reducedMotion: false
+    reducedMotion: false,
+    autoAdvance: false
   };
   try {
     const stored = JSON.parse(localStorage.getItem(LS_KEYS.SESSION_CONFIG) || '{}');

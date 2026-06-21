@@ -485,6 +485,11 @@ function renderConfigPanel(config, onChange) {
         <input type="checkbox" id="cfg-motion" role="switch" ${config.reducedMotion ? 'checked' : ''}>
         Reduced motion
       </label>
+
+      <label class="toggle-label">
+        <input type="checkbox" id="cfg-autoadvance" role="switch" ${config.autoAdvance ? 'checked' : ''}>
+        Auto-advance (next card after 1s)
+      </label>
     </div>
   `;
 
@@ -506,6 +511,7 @@ function renderConfigPanel(config, onChange) {
   bind('cfg-wheels', 'trainingWheels', null);
   bind('cfg-sound',  'soundEffects',   null);
   bind('cfg-motion', 'reducedMotion',  null);
+  bind('cfg-autoadvance', 'autoAdvance', null);
 }
 
 /* ── Answer input ────────────────────────────────────── */
@@ -522,6 +528,7 @@ function renderAnswerInput(mode, onSubmit) {
           <button class="tag-choice-btn" data-tag="0"  aria-label="Zero">0</button>
           <button class="tag-choice-btn" data-tag="+1" aria-label="Plus one">+1</button>
         </div>
+        <p class="answer-hint" aria-hidden="true">Keys: ← −1 · → +1 · ↑ ↓ space 0</p>
       </div>
     `;
 

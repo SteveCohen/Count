@@ -245,8 +245,46 @@ function initPracticeTab() {
   renderConfigPanel(config, onConfigChange);
   renderAnswerInput(config.mode, onAnswerSubmit);
   wireControlButtons();
+  initPracticeKeyboard();
 
   AppState.practiceSession.newShoe();
+}
+
+/* Keyboard tagging for Card Drill:
+   ←  = −1   ·   → = +1   ·   ↑ / ↓ / Space = 0 */
+function initPracticeKeyboard() {
+  document.addEventListener('keydown', _handlePracticeKeydown);
+}
+
+function _handlePracticeKeydown(e) {
+  if (AppState.activeTab !== 'practice') return;
+  const session = AppState.practiceSession;
+  if (!session || session.paused) return;
+
+  // Don't hijack text fields, number steppers, selects, or tab navigation
+  if (e.target.closest('input, select, textarea')) return;
+  if (e.target.closest('.tab-nav')) return;
+
+  const mode = session.currentSubMode || session.config.mode;
+  if (mode !== 'card-drill' || !session.waitingForAnswer) return;
+
+  let tag = null;
+  switch (e.key) {
+    case 'ArrowLeft':  tag = -1; break;
+    case 'ArrowRight': tag =  1; break;
+    case 'ArrowUp':
+    case 'ArrowDown':
+    case ' ':
+    case 'Spacebar':   tag =  0; break;
+    default: return;
+  }
+
+  e.preventDefault();
+  // Reuse the button's click handler so the visual selection state matches
+  const sel = tag > 0 ? '+1' : tag < 0 ? '-1' : '0';
+  const btn = document.querySelector(`.tag-choice-btn[data-tag="${sel}"]`);
+  if (btn) btn.click();
+  else onAnswerSubmit(tag);
 }
 
 function onModeChange(newMode) {
