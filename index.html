@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#1a1f17">
+  <meta name="description" content="Count Lab: Blackjack — Learn Hi-Lo card counting through interactive drills, reference, and progress tracking. No gambling, no real money.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Count Lab">
+  <title>Count Lab: Blackjack</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="icons/icon-192.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/icon-192.svg">
+</head>
+<body>
+
+  <!-- ── App Header ───────────────────────────────────── -->
+  <header class="app-header">
+    <div>
+      <div class="app-logo">Count Lab <span style="color:var(--color-ivory-muted);font-weight:400">: Blackjack</span></div>
+      <div class="app-tagline">Hi-Lo Card Counting — Education &amp; Practice</div>
+    </div>
+  </header>
+
+  <!-- ── Tab Navigation ───────────────────────────────── -->
+  <nav class="tab-nav" role="tablist" aria-label="Count Lab sections">
+    <button class="tab-btn" role="tab"
+            id="tab-start"     data-tab="start"
+            aria-controls="panel-start"
+            aria-selected="true" tabindex="0">
+      <span class="tab-icon" aria-hidden="true">▶</span>
+      <span class="tab-label">Start Here</span>
+    </button>
+    <button class="tab-btn" role="tab"
+            id="tab-practice"  data-tab="practice"
+            aria-controls="panel-practice"
+            aria-selected="false" tabindex="-1">
+      <span class="tab-icon" aria-hidden="true">♠</span>
+      <span class="tab-label">Practice</span>
+    </button>
+    <button class="tab-btn" role="tab"
+            id="tab-reference" data-tab="reference"
+            aria-controls="panel-reference"
+            aria-selected="false" tabindex="-1">
+      <span class="tab-icon" aria-hidden="true">≡</span>
+      <span class="tab-label">Reference</span>
+    </button>
+    <button class="tab-btn" role="tab"
+            id="tab-progress"  data-tab="progress"
+            aria-controls="panel-progress"
+            aria-selected="false" tabindex="-1">
+      <span class="tab-icon" aria-hidden="true">▲</span>
+      <span class="tab-label">Progress</span>
+    </button>
+    <button class="tab-btn" role="tab"
+            id="tab-casino"    data-tab="casino"
+            aria-controls="panel-casino"
+            aria-selected="false" tabindex="-1">
+      <span class="tab-icon" aria-hidden="true">⚑</span>
+      <span class="tab-label">Casino</span>
+    </button>
+  </nav>
+
+  <!-- ── Tab Panels ───────────────────────────────────── -->
+  <main class="app-content">
+
+    <!-- ── 1. Start Here ──────────────────────────────── -->
+    <section role="tabpanel" id="panel-start"
+             aria-labelledby="tab-start" tabindex="0">
+      <div class="content-prose">
+        <h1>The Hi-Lo System</h1>
+        <p class="page-subtitle">A balanced, level-one card counting method — learn why it works, not just how to use it.</p>
+
+        <!-- Hi-Lo tag table (rendered by app.js) -->
+        <h2>Tag Values</h2>
+        <div id="hilo-tag-table"></div>
+
+        <!-- Count definitions (rendered by app.js) -->
+        <h2>Key Concepts</h2>
+        <div id="count-explainer"></div>
+
+        <!-- Shoe composition graphic -->
+        <div id="shoe-composition"></div>
+
+        <!-- Why these values? (expandable) -->
+        <details id="why-values">
+          <summary>Why these values?</summary>
+          <div id="why-values-body"></div>
+        </details>
+
+        <!-- Key glossary subset -->
+        <div id="glossary-start"></div>
+      </div>
+    </section>
+
+    <!-- ── 2. Practice ────────────────────────────────── -->
+    <section role="tabpanel" id="panel-practice"
+             aria-labelledby="tab-practice" tabindex="0" hidden>
+      <div class="practice-layout">
+
+        <!-- Left column: card table -->
+        <div class="practice-cards-area">
+          <div class="practice-mode-header">
+            <span class="practice-mode-name" id="practice-mode-display">Practice</span>
+            <div id="shoe-indicator" aria-live="polite"></div>
+          </div>
+
+          <!-- Card stage: contents replaced per mode -->
+          <div id="card-stage" aria-label="Card table" aria-live="assertive" aria-atomic="false">
+          </div>
+        </div>
+
+        <!-- Right column: controls -->
+        <aside class="practice-controls-area" aria-label="Practice controls">
+
+          <!-- Mode selector -->
+          <div id="mode-selector" role="group" aria-label="Practice mode"></div>
+
+          <!-- Session config -->
+          <div id="config-panel" aria-label="Session configuration"></div>
+
+          <!-- Answer input (changes per mode) -->
+          <div id="input-panel" aria-label="Your answer"></div>
+
+          <!-- Feedback -->
+          <div id="feedback-panel" role="status" aria-live="polite" aria-atomic="true"></div>
+
+          <!-- Advance button -->
+          <button class="btn btn--secondary btn--full" id="btn-advance"
+                  aria-label="Advance to next card or round">
+            Next →
+          </button>
+
+          <!-- Action buttons -->
+          <div class="practice-actions" role="group" aria-label="Session controls">
+            <button class="btn btn--secondary btn--sm" id="btn-new-shoe">New Shoe</button>
+            <button class="btn btn--ghost btn--sm"     id="btn-reset-round">Reset Round</button>
+            <button class="btn btn--ghost btn--sm"     id="btn-reveal-hole">Reveal Hole Card</button>
+            <button class="btn btn--ghost btn--sm"     id="btn-show-answer">Show Answer</button>
+            <button class="btn btn--ghost btn--sm"     id="btn-pause"
+                    aria-pressed="false">Pause</button>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ── 3. Reference ───────────────────────────────── -->
+    <section role="tabpanel" id="panel-reference"
+             aria-labelledby="tab-reference" tabindex="0" hidden>
+      <div class="content-prose">
+        <h1>Reference</h1>
+        <p class="page-subtitle">Definitions, concepts, and a comparison of counting systems.</p>
+
+        <h2>Glossary</h2>
+        <div class="glossary-search-wrap">
+          <label for="glossary-search" class="sr-only">Search glossary terms</label>
+          <input type="search" id="glossary-search"
+                 placeholder="Search terms…"
+                 aria-controls="glossary-list"
+                 autocomplete="off" spellcheck="false">
+        </div>
+        <dl id="glossary-list" aria-label="Glossary"></dl>
+
+        <h2>Counting Methods Comparison</h2>
+        <p>Hi-Lo is the primary system taught in this app. The table below shows other systems for context only — no alternative practice modes are included in this version.</p>
+        <div class="table-scroll-wrap">
+          <table id="methods-table" aria-label="Card counting systems comparison"></table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── 4. Progress ────────────────────────────────── -->
+    <section role="tabpanel" id="panel-progress"
+             aria-labelledby="tab-progress" tabindex="0" hidden>
+      <div class="progress-layout">
+
+        <div>
+          <div class="progress-section-title">Your Statistics</div>
+          <div id="stat-grid" class="stat-grid" aria-label="Your statistics"></div>
+        </div>
+
+        <div>
+          <div class="progress-section-title">Skill Milestones</div>
+          <div id="skill-map"></div>
+        </div>
+
+        <div>
+          <div class="progress-section-title">Suggestions</div>
+          <div id="adaptive-suggestions" aria-live="polite"></div>
+        </div>
+
+        <div>
+          <div class="progress-section-title">Accuracy by Rank</div>
+          <div id="accuracy-by-rank"></div>
+        </div>
+
+        <div>
+          <div class="progress-section-title">Common Mistakes</div>
+          <div id="mistake-breakdown"></div>
+        </div>
+
+        <div>
+          <div class="progress-section-title">Recent Sessions</div>
+          <div id="session-history"></div>
+        </div>
+
+        <div class="progress-controls">
+          <button class="btn btn--ghost btn--sm" id="btn-export-progress">Export Progress JSON</button>
+          <button class="btn btn--danger btn--sm" id="btn-reset-progress">Reset All Progress</button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── 5. Casino Awareness ────────────────────────── -->
+    <section role="tabpanel" id="panel-casino"
+             aria-labelledby="tab-casino" tabindex="0" hidden>
+      <div class="content-prose">
+        <h1>Casino Awareness</h1>
+        <p class="page-subtitle">Factual educational context about how casinos operate. Not advice on detection or evasion.</p>
+
+        <!-- Permanent disclaimer (rendered by casino-awareness.js) -->
+        <div class="disclaimer-banner" role="note" aria-label="Educational disclaimer"></div>
+
+        <!-- Main content sections -->
+        <div id="casino-content"></div>
+
+        <!-- Pattern meter section -->
+        <div id="pattern-meter-section"></div>
+      </div>
+    </section>
+
+  </main><!-- /.app-content -->
+
+  <!-- ── Pause Overlay ────────────────────────────────── -->
+  <div id="pause-overlay" class="overlay" hidden
+       role="dialog" aria-modal="true" aria-label="Practice paused">
+    <div class="overlay-content">
+      <div class="overlay-title">Paused</div>
+      <p style="color:var(--color-ivory-dim);font-size:var(--text-sm)">
+        Your shoe and running count are saved. Resume when ready.
+      </p>
+      <button class="btn btn--primary" id="btn-resume">Resume</button>
+    </div>
+  </div>
+
+  <!-- ── Screen-reader live region ────────────────────── -->
+  <div id="sr-announcer" class="sr-only"
+       aria-live="assertive" aria-atomic="true" role="status"></div>
+
+  <!-- ── Scripts (dependency order) ──────────────────── -->
+  <script src="js/hilo.js"             defer></script>
+  <script src="js/deck.js"             defer></script>
+  <script src="js/progress.js"         defer></script>
+  <script src="js/ui.js"               defer></script>
+  <script src="js/practice.js"         defer></script>
+  <script src="js/reference.js"        defer></script>
+  <script src="js/casino-awareness.js" defer></script>
+  <script src="js/app.js"              defer></script>
+
+</body>
+</html>

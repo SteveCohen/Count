@@ -1,0 +1,26 @@
+{
+  "name": "Count Lab: Blackjack",
+  "short_name": "Count Lab",
+  "description": "Learn the Hi-Lo card counting system — interactive drills, reference, and progress tracking. No gambling, no real money.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#1a1f17",
+  "theme_color": "#1a1f17",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "icons/icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education"],
+  "lang": "en"
+}
