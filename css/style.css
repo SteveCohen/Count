@@ -1731,6 +1731,8 @@ details > summary:focus-visible {
   z-index: 1000;
 }
 
+.overlay[hidden] { display: none; }
+
 .overlay-content {
   background: var(--color-surface);
   border: 1px solid var(--color-brass-dark);
