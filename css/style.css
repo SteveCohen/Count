@@ -102,6 +102,8 @@ body {
   display: flex;
   flex-direction: column;
   line-height: 1.6;
+  /* Disable double-tap-to-zoom on touch devices (pinch-zoom still works) */
+  touch-action: manipulation;
 }
 
 img, svg { display: block; }
