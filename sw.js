@@ -1,6 +1,6 @@
 'use strict';
 
-const CACHE_NAME = 'count-lab-v2';
+const CACHE_NAME = 'count-lab-v3';
 
 const APP_SHELL = [
   './',
