@@ -342,12 +342,14 @@ class PracticeSession {
     recordRoundComplete();
     updateShoeIndicator(this.shoe);
 
-    // Auto-advance to the next drill after a short pause to read feedback
+    // Auto-advance to the next drill: a quick 0.5s on a correct answer, but a
+    // longer 2s on a wrong one so there's time to read the correction.
     if (this.config.autoAdvance) {
       const advId = this.dealId;
+      const delay = result.correct ? 500 : 2000;
       setTimeout(() => {
         if (this.dealId === advId && !this.paused) this.advanceDrill();
-      }, 1000);
+      }, delay);
     }
 
     return result;

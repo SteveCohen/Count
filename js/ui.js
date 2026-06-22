@@ -488,7 +488,7 @@ function renderConfigPanel(config, onChange) {
 
       <label class="toggle-label">
         <input type="checkbox" id="cfg-autoadvance" role="switch" ${config.autoAdvance ? 'checked' : ''}>
-        Auto-advance (next card after 1s)
+        Auto-advance (0.5s if correct, 2s if wrong)
       </label>
     </div>
   `;
