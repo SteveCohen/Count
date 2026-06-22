@@ -137,6 +137,9 @@ class PracticeSession {
     resetAnswerInput('running-count');
 
     const delay = DEAL_DELAYS[this.config.dealSpeed];
+    // Running count carries across rounds within the shoe, so the calculation
+    // aid starts from the count before this round's cards.
+    const startCount = this.runningCount;
 
     for (let i = 0; i < numCards; i++) {
       if (!this._isActiveDeal(dealId)) return;
@@ -151,6 +154,7 @@ class PracticeSession {
       this.roundCards.push(card);
       this.runningCount += card.hiLoTag;
       addCardToStage(card, 'sequence', this.config);
+      renderRunningCountCalc(startCount, this.roundCards, this.config.showRunningCountValues);
       announceCard(card);
       playSound('deal', this.config);
     }
@@ -342,14 +346,13 @@ class PracticeSession {
     recordRoundComplete();
     updateShoeIndicator(this.shoe);
 
-    // Auto-advance to the next drill: a quick 0.5s on a correct answer, but a
-    // longer 2s on a wrong one so there's time to read the correction.
-    if (this.config.autoAdvance) {
+    // Auto-advance only after a correct answer (0.5s). On a wrong answer, stay
+    // put so the correction remains visible until the user clicks Next.
+    if (this.config.autoAdvance && result.correct) {
       const advId = this.dealId;
-      const delay = result.correct ? 500 : 2000;
       setTimeout(() => {
         if (this.dealId === advId && !this.paused) this.advanceDrill();
-      }, delay);
+      }, 500);
     }
 
     return result;

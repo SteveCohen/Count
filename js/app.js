@@ -250,8 +250,9 @@ function initPracticeTab() {
   AppState.practiceSession.newShoe();
 }
 
-/* Keyboard tagging for Card Drill:
-   ←  = −1   ·   → = +1   ·   ↑ / ↓ / Space = 0 */
+/* Practice keyboard shortcuts:
+   Space = advance to the next round (like the Next button)
+   Card Drill tagging — ← = −1 · → = +1 · ↑ / ↓ = 0 */
 function initPracticeKeyboard() {
   document.addEventListener('keydown', _handlePracticeKeydown);
 }
@@ -261,9 +262,22 @@ function _handlePracticeKeydown(e) {
   const session = AppState.practiceSession;
   if (!session || session.paused) return;
 
-  // Don't hijack text fields, number steppers, selects, or tab navigation
-  if (e.target.closest('input, select, textarea')) return;
-  if (e.target.closest('.tab-nav')) return;
+  const t = e.target;
+
+  // Spacebar progresses the round, from anywhere on the practice tab. Leave
+  // native space behaviour for selects and real text entry (number steppers
+  // don't use space, so allow advancing from there too).
+  if (e.key === ' ' || e.key === 'Spacebar') {
+    if (t.tagName === 'SELECT' || t.tagName === 'TEXTAREA') return;
+    if (t.tagName === 'INPUT' && t.type !== 'number') return;
+    e.preventDefault();
+    session.advanceDrill();
+    return;
+  }
+
+  // Card-drill tagging via arrow keys (only while awaiting an answer)
+  if (t.closest('input, select, textarea')) return;
+  if (t.closest('.tab-nav')) return;
 
   const mode = session.currentSubMode || session.config.mode;
   if (mode !== 'card-drill' || !session.waitingForAnswer) return;
@@ -273,9 +287,7 @@ function _handlePracticeKeydown(e) {
     case 'ArrowLeft':  tag = -1; break;
     case 'ArrowRight': tag =  1; break;
     case 'ArrowUp':
-    case 'ArrowDown':
-    case ' ':
-    case 'Spacebar':   tag =  0; break;
+    case 'ArrowDown':  tag =  0; break;
     default: return;
   }
 

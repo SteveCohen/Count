@@ -186,6 +186,7 @@ function initCardStage(mode, numPlayers) {
     stage.innerHTML = `
       <div class="stage-sequence">
         <div class="card-sequence" id="sequence-cards" aria-label="Dealt cards"></div>
+        <div class="rc-calc" id="rc-calc" aria-live="polite"></div>
       </div>`;
 
   } else if (mode === 'table-flow') {
@@ -224,7 +225,8 @@ function initCardStage(mode, numPlayers) {
 }
 
 function addCardToStage(card, location, config) {
-  const showTag = config && config.trainingWheels;
+  const showTag = !!(config && (config.trainingWheels ||
+    (location === 'sequence' && config.showRunningCountValues)));
   const animate = config && !config.reducedMotion;
   const cardEl  = renderCard(card, { showTag, animate });
 
@@ -250,6 +252,30 @@ function addCardToStage(card, location, config) {
 function clearCardStage() {
   const stage = document.getElementById('card-stage');
   if (stage) stage.innerHTML = '';
+}
+
+/* ── Running-count calculation aid ───────────────────── */
+function renderRunningCountCalc(startCount, cards, show) {
+  const el = document.getElementById('rc-calc');
+  if (!el) return;
+  if (!show || !cards || cards.length === 0) { el.innerHTML = ''; return; }
+
+  const fmt = n => n > 0 ? `+${n}` : n < 0 ? `−${Math.abs(n)}` : '0';
+
+  let total = startCount;
+  const terms = cards.map(c => {
+    total += c.hiLoTag;
+    return `<span class="rc-calc__term rc-calc__term--${tagClass(c.hiLoTag)}">${tagLabel(c.hiLoTag)}</span>`;
+  }).join('');
+
+  el.innerHTML = `
+    <span class="rc-calc__label">Start</span>
+    <span class="rc-calc__start">${fmt(startCount)}</span>
+    <span class="rc-calc__op">+</span>
+    <span class="rc-calc__terms">${terms}</span>
+    <span class="rc-calc__op">=</span>
+    <span class="rc-calc__total">${fmt(total)}</span>
+  `;
 }
 
 /* ── Shoe composition strip ──────────────────────────── */
@@ -488,7 +514,12 @@ function renderConfigPanel(config, onChange) {
 
       <label class="toggle-label">
         <input type="checkbox" id="cfg-autoadvance" role="switch" ${config.autoAdvance ? 'checked' : ''}>
-        Auto-advance (0.5s if correct, 2s if wrong)
+        Auto-advance when correct (0.5s)
+      </label>
+
+      <label class="toggle-label">
+        <input type="checkbox" id="cfg-rcvalues" role="switch" ${config.showRunningCountValues ? 'checked' : ''}>
+        Show card values (Running Count)
       </label>
     </div>
   `;
@@ -512,6 +543,7 @@ function renderConfigPanel(config, onChange) {
   bind('cfg-sound',  'soundEffects',   null);
   bind('cfg-motion', 'reducedMotion',  null);
   bind('cfg-autoadvance', 'autoAdvance', null);
+  bind('cfg-rcvalues', 'showRunningCountValues', null);
 }
 
 /* ── Answer input ────────────────────────────────────── */
@@ -528,7 +560,7 @@ function renderAnswerInput(mode, onSubmit) {
           <button class="tag-choice-btn" data-tag="0"  aria-label="Zero">0</button>
           <button class="tag-choice-btn" data-tag="+1" aria-label="Plus one">+1</button>
         </div>
-        <p class="answer-hint" aria-hidden="true">Keys: ← −1 · → +1 · ↑ ↓ space 0</p>
+        <p class="answer-hint" aria-hidden="true">Keys: ← −1 · → +1 · ↑↓ 0 · space = next</p>
       </div>
     `;
 

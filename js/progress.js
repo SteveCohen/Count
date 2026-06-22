@@ -131,7 +131,8 @@ function loadSessionConfig() {
     trainingWheels: false,
     soundEffects: true,
     reducedMotion: false,
-    autoAdvance: false
+    autoAdvance: false,
+    showRunningCountValues: false
   };
   try {
     const stored = JSON.parse(localStorage.getItem(LS_KEYS.SESSION_CONFIG) || '{}');
