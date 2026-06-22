@@ -342,6 +342,14 @@ class PracticeSession {
     recordRoundComplete();
     updateShoeIndicator(this.shoe);
 
+    // Auto-advance to the next drill after a short pause to read feedback
+    if (this.config.autoAdvance) {
+      const advId = this.dealId;
+      setTimeout(() => {
+        if (this.dealId === advId && !this.paused) this.advanceDrill();
+      }, 1000);
+    }
+
     return result;
   }
 
@@ -360,6 +368,9 @@ class PracticeSession {
   // ── Advance to next drill ─────────────────────────────────
   advanceDrill() {
     clearFeedback('feedback-panel');
+    // Bump the deal id so any pending advance (e.g. a manual click landing
+    // during the auto-advance window) is invalidated and we deal only once.
+    this.dealId++;
     const advId = this.dealId;
 
     if (!this._hasCards(MIN_CARDS_FOR_NEW_ROUND) || this.shoe.penetrationReached) {
