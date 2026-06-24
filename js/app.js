@@ -459,9 +459,20 @@ function _applyReducedMotion(prefs) {
 }
 
 function _registerServiceWorker() {
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js').catch(err => {
-      console.warn('Service worker registration failed:', err);
-    });
-  }
+  if (!('serviceWorker' in navigator)) return;
+
+  // If a worker was already controlling this page, a later controllerchange
+  // means a NEW (updated) worker has taken over — reload once so the page runs
+  // the freshly-deployed assets. Skipped on a brand-new visit's first claim.
+  const hadController = !!navigator.serviceWorker.controller;
+  let refreshing = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (refreshing || !hadController) return;
+    refreshing = true;
+    window.location.reload();
+  });
+
+  navigator.serviceWorker.register('./sw.js').catch(err => {
+    console.warn('Service worker registration failed:', err);
+  });
 }

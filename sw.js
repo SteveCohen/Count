@@ -1,6 +1,6 @@
 'use strict';
 
-const CACHE_NAME = 'count-lab-v1';
+const CACHE_NAME = 'count-lab-v3';
 
 const APP_SHELL = [
   './',
@@ -38,20 +38,31 @@ self.addEventListener('activate', event => {
   );
 });
 
+// Allow the page to tell a waiting SW to take over immediately.
+self.addEventListener('message', event => {
+  if (event.data === 'SKIP_WAITING') self.skipWaiting();
+});
+
+// Network-first for same-origin GETs: always pick up the latest deploy when
+// online, fall back to the cache when offline. This avoids the stale-content
+// trap of a pure cache-first strategy after each deploy.
 self.addEventListener('fetch', event => {
   if (!event.request.url.startsWith(self.location.origin)) return;
   if (event.request.method !== 'GET') return;
 
   event.respondWith(
-    caches.match(event.request).then(cached => {
-      if (cached) return cached;
-      return fetch(event.request).then(response => {
-        if (response && response.status === 200) {
+    fetch(event.request)
+      .then(response => {
+        if (response && response.status === 200 && response.type === 'basic') {
           const clone = response.clone();
           caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
         }
         return response;
-      });
-    })
+      })
+      .catch(() =>
+        caches.match(event.request).then(cached =>
+          cached || caches.match('./index.html')
+        )
+      )
   );
 });
